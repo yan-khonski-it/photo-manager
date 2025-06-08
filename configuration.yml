@@ -1,0 +1,12 @@
+# Which directories you want to scan
+directories:
+  - directory:
+      path: "<PATH1>"
+      indexName: "Index 1"
+  - directory:
+      path: "<PATH2>"
+      indexName: "Index 2"
+
+index:
+  # Where do you want the application to store calculated index for all the directories.
+  path: "${env:PHOTO_MANAGER_HOME}/index"
