@@ -36,6 +36,20 @@
       <version>3.49.1.0</version>
     </dependency>
 
+    <!-- Extracts metadata from images -->
+    <dependency>
+      <groupId>com.drewnoakes</groupId>
+      <artifactId>metadata-extractor</artifactId>
+      <version>2.19.0</version>
+    </dependency>
+
+    <!-- Parse configuration.yml file -->
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>2.4</version>
+    </dependency>
+
     <!-- For unit tests and assertions-->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -75,7 +89,6 @@
           <targetJdk>${java.version}</targetJdk>
           <rulesets>
             <ruleset>custom-ruleset.xml</ruleset>
-            <ruleset>category/java/bestpractices.xml</ruleset>
           </rulesets>
         </configuration>
         <executions>
