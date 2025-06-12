@@ -49,5 +49,4 @@ public class ImageMetadataExtractor {
 
     return Collections.unmodifiableMap(retrievedTags);
   }
-
 }
