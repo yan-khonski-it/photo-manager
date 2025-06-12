@@ -36,7 +36,11 @@ public class ImageReader {
 
     Map<String, String> metadata = metadataExtractor.extractImageMetadata(file);
     LocalDateTime createdDateTime = DateTimeExtractor.extractDateTime(metadata);
-    LOGGER.info("Created image at {}.", createdDateTime);
+    if (createdDateTime == null) {
+      LOGGER.warn("Could not extract date time from metadata for file: {}.", file.getAbsolutePath());
+    } else {
+      LOGGER.info("Created image at {}.", createdDateTime);
+    }
 
     /*
     String make = retrievedTags.get("Make");
