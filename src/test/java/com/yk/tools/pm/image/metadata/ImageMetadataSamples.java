@@ -1,4 +1,4 @@
-package com.yk.tools.pm.image;
+package com.yk.tools.pm.image.metadata;
 
 import java.util.HashMap;
 import java.util.Map;

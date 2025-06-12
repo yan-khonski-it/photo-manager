@@ -17,7 +17,9 @@
     The Basic ruleset contains a collection of good practices which should be followed.
   </description>
 
-  <rule ref="category/java/errorprone.xml"/>
+  <rule ref="category/java/errorprone.xml">
+    <exclude name="UseLocaleWithCaseConversions" />
+  </rule>
   <rule ref="category/java/performance.xml"/>
   <rule ref="category/java/security.xml"/>
 

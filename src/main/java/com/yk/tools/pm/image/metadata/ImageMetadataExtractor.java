@@ -1,4 +1,4 @@
-package com.yk.tools.pm.image;
+package com.yk.tools.pm.image.metadata;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
