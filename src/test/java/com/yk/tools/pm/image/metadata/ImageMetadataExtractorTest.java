@@ -5,38 +5,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.yk.tools.pm.utils.TestUtils;
 import java.io.File;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class ImageMetadataExtractorTest {
 
-  @Test
-  void testExtractMetadataValidImage() {
+  private static Stream<Arguments> imageFilesAndExpectedMetadata() {
+    return Stream.of(
+        Arguments.of("pictures/p1_20250404_153223.jpg", ImageMetadataSamples.getMetadataForP1()),
+        Arguments.of("pictures/p2_20250522_134927.jpg", ImageMetadataSamples.getMetadataForP2()),
+        Arguments.of("pictures/random.png", ImageMetadataSamples.getMetadataForRandom()),
+        Arguments.of("pictures/random1.png", ImageMetadataSamples.getMetadataForRandom1()),
+        Arguments.of("pictures/random2.png", ImageMetadataSamples.getMetadataForRandom2()),
+        Arguments.of("pictures/example.jpg", ImageMetadataSamples.getMetadataForExample()),
+        Arguments.of("pictures/viber-1.jpg", ImageMetadataSamples.getMetadataForViber1()),
+        Arguments.of("pictures/ZV-E1-1.JPG", SonyZV_E1_MetadataSample.getSonyZVE1Metadata())
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("imageFilesAndExpectedMetadata")
+  void testExtractMetadataValidImage(String filePath, Map<String, String> expectedMetadata) {
     ImageMetadataExtractor extractor = new ImageMetadataExtractor();
-
-    File imageFile1 = TestUtils.getFileFromResources("pictures/p1_20250404_153223.jpg");
-    Map<String, String> actualMetadata1 = extractor.extractImageMetadata(imageFile1);
-    Map<String, String> expectedMetadata1 = ImageMetadataSamples.getMetadataForP1();
-    assertThat(actualMetadata1).isEqualTo(expectedMetadata1);
-
-    File imageFile2 = TestUtils.getFileFromResources("pictures/example.jpg");
-    Map<String, String> actualMetadata2 = extractor.extractImageMetadata(imageFile2);
-    Map<String, String> expectedMetadata2 = ImageMetadataSamples.getMetadataForExample();
-    assertThat(actualMetadata2).isEqualTo(expectedMetadata2);
-
-    File imageFile3 = TestUtils.getFileFromResources("pictures/random.png");
-    Map<String, String> actualMetadata3 = extractor.extractImageMetadata(imageFile3);
-    Map<String, String> expectedMetadata3 = ImageMetadataSamples.getMetadataForRandom();
-    assertThat(actualMetadata3).isEqualTo(expectedMetadata3);
-
-    File imageFile4 = TestUtils.getFileFromResources("pictures/random1.png");
-    Map<String, String> actualMetadata4 = extractor.extractImageMetadata(imageFile4);
-    Map<String, String> expectedMetadata4 = ImageMetadataSamples.getMetadataForRandom1();
-    assertThat(actualMetadata4).isEqualTo(expectedMetadata4);
-
-    File imageFile5 = TestUtils.getFileFromResources("pictures/random2.png");
-    Map<String, String> actualMetadata5 = extractor.extractImageMetadata(imageFile5);
-    Map<String, String> expectedMetadata5 = ImageMetadataSamples.getMetadataForRandom2();
-    assertThat(actualMetadata5).isEqualTo(expectedMetadata5);
+    File imageFile = TestUtils.getFileFromResources(filePath);
+    Map<String, String> actualMetadata = extractor.extractImageMetadata(imageFile);
+    assertThat(actualMetadata).isEqualTo(expectedMetadata);
   }
 
   @Test
