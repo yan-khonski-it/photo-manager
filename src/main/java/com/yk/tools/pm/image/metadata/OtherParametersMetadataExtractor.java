@@ -2,64 +2,80 @@ package com.yk.tools.pm.image.metadata;
 
 import com.yk.tools.pm.utils.NumberUtils;
 import java.util.Map;
+import java.util.function.Function;
 
 public final class OtherParametersMetadataExtractor {
+
+  private static final String MODEL = "Model";
+  private static final String MAKE = "Make";
+  private static final String FILE_SIZE = "File Size";
+
+  private static final String[] WIDTH_KEYS = {"Image Width", "Exif Image Width", "Width"};
+  private static final String[] HEIGHT_KEYS = {"Image Height", "Exif Image Height", "Height"};
+
 
   private OtherParametersMetadataExtractor() {
     throw new AssertionError("Instance is not allowed.");
   }
 
-  /**
-   * Extracts the value for 'Model' or 'model' from metadata.
-   */
   public static String extractModel(Map<String, String> metadata) {
-    if (metadata.containsKey("Model")) {
-      return metadata.get("Model");
-    } else if (metadata.containsKey("model")) {
-      return metadata.get("model");
-    }
-    return null;
+    return metadata.get(MODEL);
   }
 
-  /**
-   * Extracts the value for 'Make' or 'make' from metadata.
-   */
   public static String extractMake(Map<String, String> metadata) {
-    if (metadata.containsKey("Make")) {
-      return metadata.get("Make");
-    } else if (metadata.containsKey("make")) {
-      return metadata.get("make");
-    }
-    return null;
+    return metadata.get(MAKE);
   }
 
   /**
    * Extracts the width from metadata, checking common keys and parsing as int.
    */
   public static Integer extractWidth(Map<String, String> metadata) {
-    String[] widthKeys = {"Width", "Image Width", "Exif Image Width"};
-    for (String key : widthKeys) {
-      String value = metadata.get(key);
-      if (value != null) {
-        return NumberUtils.retrieveIntValue(value);
-      }
-    }
-    return null;
+    return extractValueByKeysAndConvert(metadata, WIDTH_KEYS, NumberUtils::retrieveIntValue);
   }
 
   /**
    * Extracts the height from metadata, checking common keys and parsing as int.
    */
   public static Integer extractHeight(Map<String, String> metadata) {
-    String[] heightKeys = {"Height", "Image Height", "Exif Image Height"};
-    for (String key : heightKeys) {
-      String value = metadata.get(key);
-      if (value != null) {
-        return NumberUtils.retrieveIntValue(value);
+    return extractValueByKeysAndConvert(metadata, HEIGHT_KEYS, NumberUtils::retrieveIntValue);
+  }
+
+  public static Long extractSize(Map<String, String> metadata) {
+    return extractValueByKeyAndConvert(metadata, FILE_SIZE, NumberUtils::retrieveLongValue);
+  }
+
+  /**
+   * Given metadata and array of keys, extract first non null value from metadata by one of the keys. If extracted value is not null, apply converter function
+   * to convert it to the final result.
+   * <p>
+   * It is useful to extract value that can be linked to several keys, for example, {@code "Width", "Image Width", "Exif Image Width"}, then if value is not
+   * null, it can be converted to other type, such as {@code Long}.
+   */
+  private static <T> T extractValueByKeysAndConvert(Map<String, String> metadata, String[] keys, Function<String, T> converter) {
+    for (String key : keys) {
+      if (metadata.containsKey(key)) {
+        String value = metadata.get(key);
+        if (value != null) {
+          return converter.apply(value);
+        } else {
+          return null;
+        }
       }
     }
+
     return null;
   }
 
+  private static <T> T extractValueByKeyAndConvert(Map<String, String> metadata, String key, Function<String, T> converter) {
+    if (metadata.containsKey(key)) {
+      String value = metadata.get(key);
+      if (value != null) {
+        return converter.apply(value);
+      } else {
+        return null;
+      }
+    }
 
+    return null;
+  }
 }

@@ -2,7 +2,10 @@ package com.yk.tools.pm.image;
 
 import com.yk.tools.pm.entity.ImageIndexEntry;
 import com.yk.tools.pm.image.metadata.DateTimeExtractor;
+import com.yk.tools.pm.image.metadata.ImageHashExtractor;
 import com.yk.tools.pm.image.metadata.ImageMetadataExtractor;
+import com.yk.tools.pm.image.metadata.OtherParametersMetadataExtractor;
+import com.yk.tools.pm.utils.JsonUtils;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -25,31 +28,36 @@ public class ImageReader {
     metadataExtractor = new ImageMetadataExtractor();
   }
 
+  @SuppressWarnings("PMD.UnusedAssignment")
   public ImageIndexEntry readImage(File file) {
+    String byteHashHex = null;
+
     try {
       BufferedImage image = ImageIO.read(file);
-      LOGGER.debug(image);
+      byteHashHex = ImageHashExtractor.computeImagePixelHash(image);
+      LOGGER.debug("Hash: {}", byteHashHex);
     } catch (IOException e) {
       LOGGER.warn("Failed to read an image. File: {}.", file.getAbsolutePath(), e);
       return null;
     }
 
     Map<String, String> metadata = metadataExtractor.extractImageMetadata(file);
-    LocalDateTime createdDateTime = DateTimeExtractor.extractDateTime(metadata);
-    if (createdDateTime == null) {
-      LOGGER.warn("Could not extract date time from metadata for file: {}.", file.getAbsolutePath());
-    } else {
-      LOGGER.info("Created image at {}.", createdDateTime);
+
+    long fileSize = file.length();
+    Long metadataSize = OtherParametersMetadataExtractor.extractSize(metadata);
+    if (metadataSize != null && metadataSize != fileSize) {
+      LOGGER.warn("Metadata size: {} is not equal to file size: {}. File: {}.", metadataSize, fileSize, file.getAbsolutePath());
     }
 
-    /*
-    String make = retrievedTags.get("Make");
-    String model = retrievedTags.get("Model");
-    String dataTime = retrievedTags.get("Date/Time");
-    String height = retrievedTags.get("Image Height");
-    String width = retrievedTags.get("Image Width");
-*/
+    String metadataJson = JsonUtils.toJson(metadata);
 
-    return null;
+    LocalDateTime createdDateTime = DateTimeExtractor.extractDateTime(metadata);
+    String make = OtherParametersMetadataExtractor.extractMake(metadata);
+    String model = OtherParametersMetadataExtractor.extractModel(metadata);
+    Integer width = OtherParametersMetadataExtractor.extractWidth(metadata);
+    Integer height = OtherParametersMetadataExtractor.extractHeight(metadata);
+
+    return new ImageIndexEntry(null, file.getName(), file.getParentFile().getAbsolutePath(), fileSize, width, height, byteHashHex, createdDateTime, make, model,
+        metadataJson);
   }
 }

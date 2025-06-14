@@ -22,6 +22,19 @@ public final class NumberUtils {
    * </ul>
    */
   public static Integer retrieveIntValue(String str) {
+    String value = retrieveDigitsGroup(str);
+    return value != null ? Integer.parseInt(value) : null;
+  }
+
+  /**
+   * Same as {@link #retrieveIntValue(String)}, but for {@code Long}.
+   */
+  public static Long retrieveLongValue(String str) {
+    String value = retrieveDigitsGroup(str);
+    return value != null ? Long.parseLong(value) : null;
+  }
+
+  private static String retrieveDigitsGroup(String str) {
     if (StringUtils.isBlank(str)) {
       return null;
     }
@@ -29,12 +42,12 @@ public final class NumberUtils {
     String trimmed = str.trim();
     Matcher matcher = DIGITS_PATTERN.matcher(trimmed);
     if (matcher.find()) {
-      String match = matcher.group();
+      String value = matcher.group();
       if (matcher.find()) { // second call finds another group of digits → invalid
         return null;
+      } else {
+        return value;
       }
-
-      return Integer.parseInt(match);
     }
 
     return null;

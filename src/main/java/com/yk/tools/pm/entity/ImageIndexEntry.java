@@ -6,13 +6,15 @@ import java.time.LocalDateTime;
  * Represents a photo in the index.
  */
 public record ImageIndexEntry(
-    long id,
+    Long id, // Should be NULL when inserting into index. AUTO-INCREMENTED.
     String filename,
     String path,
-    long fileSize,
-    int width,
-    int height,
+    Long fileSize,
+    Integer width,
+    Integer height,
     String bytesHash,
     LocalDateTime createdDateTime,
+    String make,
+    String model,
     String metadata) {
 }

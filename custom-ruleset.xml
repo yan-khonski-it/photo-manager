@@ -18,13 +18,14 @@
   </description>
 
   <rule ref="category/java/errorprone.xml">
-    <exclude name="UseLocaleWithCaseConversions" />
+    <exclude name="UseLocaleWithCaseConversions"/>
   </rule>
   <rule ref="category/java/performance.xml"/>
   <rule ref="category/java/security.xml"/>
 
   <rule ref="category/java/bestpractices.xml">
     <exclude name="GuardLogStatement"/>
+    <exclude name="UseVarargs" />
   </rule>
 
   <rule ref="category/java/codestyle.xml">
@@ -39,16 +40,16 @@
   <rule ref="category/java/codestyle.xml/ShortVariable">
     <!-- Name id is valid name -->
     <properties>
-      <property name="violationSuppressXPath" value=".[@Name='id']"/>
+      <property name="violationSuppressXPath" value=".[@Name='id' or @Name='sb']"/>
     </properties>
   </rule>
 
   <rule ref="category/java/design.xml">
-    <exclude name="LawOfDemeter" />
-    <exclude name="LoosePackageCoupling" />
+    <exclude name="LawOfDemeter"/>
+    <exclude name="LoosePackageCoupling"/>
   </rule>
 
   <rule ref="category/java/multithreading.xml">
-    <exclude name="UseConcurrentHashMap" />
+    <exclude name="UseConcurrentHashMap"/>
   </rule>
 </ruleset>
