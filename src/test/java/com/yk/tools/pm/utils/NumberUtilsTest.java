@@ -14,6 +14,8 @@ class NumberUtilsTest {
       // Valid: Only one number group
       "'4000',               4000",
       "'pixels 4000 super',  4000",
+      "  pixels 4000 super , 4000",
+      "pixels 4000 super,    4000",
       "'foo 123',            123",
       "'   42   ',           42",
       "'-123',              -123",

@@ -11,6 +11,16 @@ public final class NumberUtils {
     throw new AssertionError("Instance is not allowed.");
   }
 
+  /**
+   * Retrieves number part from a string containing both words and a number. If the sting contains more than one number, returns null.
+   * <p>
+   * Examples:
+   * <ul>
+   *   <li>4240 pixels -> 4240</li>
+   *   <li>4240 -> 4240</li>
+   *   <li>Width 4240 pixels -> 4240</li>
+   * </ul>
+   */
   public static Integer retrieveIntValue(String str) {
     if (StringUtils.isBlank(str)) {
       return null;
@@ -18,17 +28,15 @@ public final class NumberUtils {
 
     String trimmed = str.trim();
     Matcher matcher = DIGITS_PATTERN.matcher(trimmed);
-    Integer value = null;
-
-    int count = 0;
-    while (matcher.find()) {
-      count++;
-      // More than one match? Not valid for your case.
-      if (count > 1) { // NOPMD - AvoidLiteralsInIfCondition
+    if (matcher.find()) {
+      String match = matcher.group();
+      if (matcher.find()) { // second call finds another group of digits → invalid
         return null;
       }
-      value = Integer.parseInt(matcher.group());
+
+      return Integer.parseInt(match);
     }
-    return count == 1 ? value : null;
+
+    return null;
   }
 }
