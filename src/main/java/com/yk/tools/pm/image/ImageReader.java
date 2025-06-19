@@ -28,19 +28,8 @@ public class ImageReader {
     metadataExtractor = new ImageMetadataExtractor();
   }
 
-  @SuppressWarnings("PMD.UnusedAssignment")
   public ImageIndexEntry readImage(File file) {
-    String byteHashHex = null;
-
-    try {
-      BufferedImage image = ImageIO.read(file);
-      byteHashHex = ImageHashExtractor.computeImagePixelHash(image);
-      LOGGER.debug("Hash: {}", byteHashHex);
-    } catch (IOException e) {
-      LOGGER.warn("Failed to read an image. File: {}.", file.getAbsolutePath(), e);
-      return null;
-    }
-
+    String byteHashHex = ImageHashExtractor.computeImagePixelHash(file);
     Map<String, String> metadata = metadataExtractor.extractImageMetadata(file);
 
     long fileSize = file.length();

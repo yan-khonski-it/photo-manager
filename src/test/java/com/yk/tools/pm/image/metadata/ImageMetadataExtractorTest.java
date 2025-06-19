@@ -22,7 +22,9 @@ class ImageMetadataExtractorTest {
         Arguments.of("pictures/random2.png", ImageMetadataSamples.getMetadataForRandom2()),
         Arguments.of("pictures/example.jpg", ImageMetadataSamples.getMetadataForExample()),
         Arguments.of("pictures/viber-1.jpg", ImageMetadataSamples.getMetadataForViber1()),
-        Arguments.of("pictures/ZV-E1-1.JPG", SonyZV_E1_MetadataSample.getSonyZVE1Metadata())
+        Arguments.of("pictures/ZV-E1-1.JPG", SonyZV_E1_MetadataSample.getSonyZVE1Metadata()),
+        Arguments.of("pictures/raw-image.jpg", SamsungS22UltraMetadataSamples.getMetadataForRawImageJpg()),
+        Arguments.of("pictures/raw-image.dng", SamsungS22UltraMetadataSamples.getMetadataForRawImageDng())
     );
   }
 

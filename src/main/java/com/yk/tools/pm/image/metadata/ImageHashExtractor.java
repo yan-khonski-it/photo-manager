@@ -2,46 +2,71 @@ package com.yk.tools.pm.image.metadata;
 
 import com.yk.tools.pm.utils.ArrayUtils;
 import com.yk.tools.pm.utils.HashUtils;
-import com.yk.tools.pm.utils.ImageUtils;
 import java.awt.image.BufferedImage;
-import java.math.BigInteger;
+import java.io.File;
+import java.io.IOException;
 import java.security.MessageDigest;
+import javax.imageio.ImageIO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class ImageHashExtractor {
+
+  private static final Logger LOGGER = LogManager.getLogger(ImageHashExtractor.class);
+
+  private static final int MINIMUM_IMAGE_SIZE = 4096; // 64*64, We will ignore smaller images.
 
   private ImageHashExtractor() {
     throw new AssertionError("Instance is not allowed.");
   }
 
-  public static String computeImagePixelHash(BufferedImage image) {
-    int width = image.getWidth();
-    int height = image.getHeight();
-    int[] pixels = image.getRGB(0, 0, width, height, null, 0, width);
-    byte[] imageBytes = ImageUtils.writeImmageToByteArray(image, "JPEG");
+  public static String computeImagePixelHash(File file) {
+    BufferedImage image;
 
-    ArrayUtils.compareArrays(ArrayUtils.intArrayToByteArray(pixels), imageBytes);
-    MessageDigest digest = HashUtils.messageDigestSha256();
-
-    for (int pixel : pixels) {
-      digest.update((byte) (pixel >> 24));  // alpha
-      digest.update((byte) (pixel >> 16));  // red
-      digest.update((byte) (pixel >> 8));   // green
-      digest.update((byte) pixel);          // blue
+    try {
+      image = ImageIO.read(file);
+    } catch (IOException e) {
+      LOGGER.warn("Failed to read an image. File: {}.", file.getAbsolutePath(), e);
+      return null;
     }
 
-    return convertByteHashToHexHash(digest.digest());
+    int width = image.getWidth();
+    int height = image.getHeight();
+    if (!validateImageDimensions(file, width, height)) {
+      return null;
+    }
+
+    int[] pixels = image.getRGB(0, 0, width, height, null, 0, width);
+    if (pixels.length < MINIMUM_IMAGE_SIZE) {
+
+    }
+
+    byte[] pixelBytes = ArrayUtils.convertIntPixelsToBytes(pixels);
+
+    MessageDigest messageDigest = HashUtils.messageDigestSha256();
+    byte[] hashBytes = messageDigest.digest(pixelBytes);
+    return convertByteHashToHexHash(hashBytes);
   }
 
   private static String convertByteHashToHexHash(byte[] hashBytes) {
-    // Convert the byte array to a hexadecimal string
-    BigInteger bigInt = new BigInteger(1, hashBytes);
-    StringBuilder hexHash = new StringBuilder(bigInt.toString(16));
-
-    // Pad with leading zeros if necessary
-    while (hexHash.length() < 64) { // SHA-256 hash is 64 hex characters long
-      hexHash.insert(0, "0");
+    StringBuilder hexString = new StringBuilder(2 * hashBytes.length);
+    for (byte b : hashBytes) {
+      String hex = Integer.toHexString(0xff & b);
+      if (hex.length() == 1) {
+        hexString.append('0');
+      }
+      hexString.append(hex);
     }
 
-    return hexHash.toString();
+    return hexString.toString();
+  }
+
+  private static boolean validateImageDimensions(File file, int width, int height) {
+    if (width < MINIMUM_IMAGE_SIZE || height < MINIMUM_IMAGE_SIZE) {
+      LOGGER.warn("Invalid image file: [%{}] dimensions. Width: {}, Height: {}.", file.getAbsolutePath(), width, height);
+      return false;
+    }
+
+    return true;
   }
 }

@@ -19,6 +19,7 @@
 
   <rule ref="category/java/errorprone.xml">
     <exclude name="UseLocaleWithCaseConversions"/>
+    <exclude name="AvoidLiteralsInIfCondition" />
   </rule>
   <rule ref="category/java/performance.xml"/>
   <rule ref="category/java/security.xml"/>
