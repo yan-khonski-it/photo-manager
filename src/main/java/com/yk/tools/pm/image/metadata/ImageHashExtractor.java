@@ -14,7 +14,7 @@ public final class ImageHashExtractor {
 
   private static final Logger LOGGER = LogManager.getLogger(ImageHashExtractor.class);
 
-  private static final int MINIMUM_IMAGE_SIZE = 4096; // 64*64, We will ignore smaller images.
+  private static final int MIN_SIZE = 4096; // 64*64, We will ignore smaller images.
 
   private ImageHashExtractor() {
     throw new AssertionError("Instance is not allowed.");
@@ -37,9 +37,6 @@ public final class ImageHashExtractor {
     }
 
     int[] pixels = image.getRGB(0, 0, width, height, null, 0, width);
-    if (pixels.length < MINIMUM_IMAGE_SIZE) {
-
-    }
 
     byte[] pixelBytes = ArrayUtils.convertIntPixelsToBytes(pixels);
 
@@ -62,7 +59,7 @@ public final class ImageHashExtractor {
   }
 
   private static boolean validateImageDimensions(File file, int width, int height) {
-    if (width < MINIMUM_IMAGE_SIZE || height < MINIMUM_IMAGE_SIZE) {
+    if (width < MIN_SIZE || height < MIN_SIZE) {
       LOGGER.warn("Invalid image file: [%{}] dimensions. Width: {}, Height: {}.", file.getAbsolutePath(), width, height);
       return false;
     }

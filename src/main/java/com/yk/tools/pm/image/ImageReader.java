@@ -6,12 +6,9 @@ import com.yk.tools.pm.image.metadata.ImageHashExtractor;
 import com.yk.tools.pm.image.metadata.ImageMetadataExtractor;
 import com.yk.tools.pm.image.metadata.OtherParametersMetadataExtractor;
 import com.yk.tools.pm.utils.JsonUtils;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Map;
-import javax.imageio.ImageIO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
