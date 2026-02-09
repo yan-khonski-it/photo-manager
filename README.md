@@ -9,7 +9,7 @@ Additionally, it will help you to sync with back up for example external drives.
 ## Setup
 
 ### Prerequisites
-- Java 21
+- Java 25
 - Maven 3
 
 Set environment variable to the index location
